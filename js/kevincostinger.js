@@ -44,10 +44,74 @@
 let sumExpenses = 0; //Use this variable to keep the sum up to date.
 
 function submitForm(e){
-    //TODO: Prevent the default behavior of the submit button.
-    //TODO: Validate the form. If everything is fine, add the expense to the tracker and reset the form.
-}
+    //DONE: Prevent the default behavior of the submit button.
+    e.preventDefault();
 
+    //DONE: Validate the form. If everything is fine, add the expense to the tracker and reset the form.
+    
+    let dateInput = document.querySelector("#date");
+    let amountInput = document.querySelector("#amount");
+    let textInput = document.querySelector("#text");
+
+    let date = dateInput.value;
+    let amount = parseFloat(amountInput.value);
+    let text = textInput.value;
+
+    // Validation
+    if(isEmpty(date)){
+        dateInput.focus();
+        return;
+    }
+
+    if(isNaN(amount) || amount < 0.01){
+        amountInput.focus();
+        return;
+    }
+
+    if(isEmpty(text) || text.length < 3){
+        textInput.focus();
+        return;
+    }
+
+    // Table row
+    let tbody = document.querySelector("tbody");
+    let tr = document.createElement("tr");
+
+    let tdDate = document.createElement("td");
+    tdDate.textContent = date;
+
+    let tdAmount = document.createElement("td");
+    tdAmount.textContent = formatEuro(amount);
+
+    let tdText = document.createElement("td");
+    tdText.textContent = text;
+
+    let tdDelete = document.createElement("td");
+    let btn = document.createElement("button");
+    btn.textContent = "X";
+
+    btn.addEventListener("click", function(){
+        sumExpenses -= amount;
+        document.querySelector("#sum").textContent = formatEuro(sumExpenses);
+        tr.remove();
+    });
+
+    tdDelete.append(btn);
+
+    tr.append(tdDate);
+    tr.append(tdAmount);
+    tr.append(tdText);
+    tr.append(tdDelete);
+
+    tbody.append(tr);
+
+    // sum update 
+    sumExpenses += amount;
+    document.querySelector("#sum").textContent = formatEuro(sumExpenses);
+
+    // Reset form
+    e.target.reset();
+}
 
 /*****************************
  * DO NOT CHANGE CODE BELOW.
